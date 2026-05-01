@@ -1,0 +1,65 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Renode Debug",
+      "type": "cortex-debug",
+      "request": "launch",
+
+      "servertype": "external",
+      "gdbTarget": "localhost:3333",
+
+      "executable": "${workspaceFolder}/build/output/stm32f411.elf",
+      "gdbPath": "/usr/bin/gdb-multiarch",
+
+      "device": "STM32F411",
+      "interface": "swd",
+
+      "runToEntryPoint": "main",
+
+      "svdFile": "${workspaceFolder}/external/cmsis_device_f4/Include/STM32F411.svd",
+      
+      // "preLaunchCommands": [
+      //   "monitor reset halt"
+      //   ],
+        
+      "showDevDebugOutput": "raw"
+    },
+
+    {
+      "name": "ST-Link Hardware",
+      "type": "cortex-debug",
+      "request": "launch",
+
+      "servertype": "openocd",
+
+      "executable": "${workspaceFolder}/build/output/stm32f411.elf",
+      "toolchainPrefix": "arm-none-eabi",
+      "objdumpPath": "/usr/bin/arm-none-eabi-objdump",
+
+      "gdbPath": "/usr/bin/gdb-multiarch",
+
+      "device": "STM32F411",
+      "interface": "swd",
+
+      "configFiles": [
+        "interface/stlink.cfg",
+        "target/stm32f4x.cfg"
+      ],
+
+      "searchDir": [
+        "/usr/share/openocd/scripts"
+      ],
+
+      "runToEntryPoint": "main",
+
+      "svdFile": "${workspaceFolder}/external/cmsis_device_f4/Include/STM32F411.svd",
+
+      "openOCDLaunchCommands": [
+        "adapter speed 1000"
+      ],
+
+      "showDevDebugOutput": "raw"
+    }
+  ]
+}

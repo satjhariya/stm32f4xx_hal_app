@@ -1,0 +1,68 @@
+# STM32F4 + UART simulation (clean version)
+
+# --------------------------------------------------
+# Create machine
+# --------------------------------------------------
+mach create "stm32f4"
+
+# Load STM32F4 platform
+machine LoadPlatformDescription @platforms/cpus/stm32f4.repl
+
+# --------------------------------------------------
+# Load firmware (relative path FIXED)
+# --------------------------------------------------
+$elf?=@build/output/stm32f411.elf
+
+sysbus LoadELF $elf
+
+# --------------------------------------------------
+# UART analyzers (enable what you need)
+# --------------------------------------------------
+showAnalyzer sysbus.usart2
+
+# Optional:
+# showAnalyzer sysbus.usart1
+# showAnalyzer sysbus.usart3
+
+# --------------------------------------------------
+# Optional TCP terminals
+# --------------------------------------------------
+# emulation CreateServerSocketTerminal 3456 "uart2_socket"
+# connector Connect sysbus.usart2 uart2_socket
+
+# --------------------------------------------------
+# Optional PTY (Linux)
+# --------------------------------------------------
+# emulation CreateUartPtyTerminal "uart2_pty" "/tmp/uart2"
+# connector Connect sysbus.usart2 uart2_pty
+
+# --------------------------------------------------
+# Optional: expose UART2 over a TCP socket as well
+# Connect with: nc localhost 3456
+# or printf '\xAA\x10\x06\x01\xBD\x0A' | nc localhost 3456
+# Anything typed into nc goes to USART2 RX.
+# Firmware TX appears in the nc window.
+# --------------------------------------------------
+
+# --------------------------------------------------
+# Logging (VERY useful for debugging)
+# --------------------------------------------------
+logLevel 3
+
+# --------------------------------------------------
+# Start paused (for GDB)
+# --------------------------------------------------
+start
+pause
+
+# --------------------------------------------------
+# GDB server
+# --------------------------------------------------
+machine StartGdbServer 3333
+
+echo "===================================="
+echo " STM32F4 loaded"
+echo " ELF: $elf"
+echo " GDB: localhost:3333"
+echo " UART2 analyzer active"
+echo "===================================="

@@ -1,0 +1,98 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+
+    {
+      "label": "Configure",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "-B", "build",
+        "-DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-gcc.cmake",
+        "-DCMAKE_BUILD_TYPE=Debug"
+      ],
+      "problemMatcher": []
+    },
+
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build", "build",
+        "-j"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$gcc"
+    },
+
+    {
+      "label": "Rebuild",
+      "type": "shell",
+      "dependsOn": [
+        "Clean",
+        "Configure",
+        "Build"
+      ],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+
+    {
+      "label": "Clean",
+      "type": "shell",
+      "command": "rm",
+      "args": ["-rf", "build"],
+      "problemMatcher": []
+    },
+
+    {
+      "label": "Flash (OpenOCD)",
+      "type": "shell",
+      "command": "openocd",
+      "args": [
+        "-f", "interface/stlink.cfg",
+        "-f", "target/stm32f4x.cfg",
+        "-c",
+        "program ${workspaceFolder}/build/output/stm32f411.elf verify reset exit"
+      ],
+      "dependsOn": "Build",
+      "problemMatcher": []
+    },
+
+    {
+      "label": "Build + Flash",
+      "dependsOn": [
+        "Build",
+        "Flash (OpenOCD)"
+      ],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+
+    {
+      "label": "Start Renode",
+      "type": "shell",
+      "command": "renode",
+      "args": [
+        "--disable-xwt",
+        "stm32f4.resc"
+      ],
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": ".*"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Machine started"
+        }
+      }
+    }
+
+  ]
+}
