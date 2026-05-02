@@ -1,13 +1,9 @@
-add_library(app STATIC
-    main.c
-    led/led.c
-)
+add_library(app INTERFACE)
 
-target_include_directories(app PUBLIC
+target_include_directories(app INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/led
 )
 
-target_link_libraries(app PUBLIC
-    platform
+target_link_libraries(app INTERFACE
+    hardware
 )

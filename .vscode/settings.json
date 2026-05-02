@@ -1,5 +1,6 @@
 {
   "cmake.configureSettings": {
     "CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/cmake/toolchains/arm-gcc.cmake"
-  }
+  },
+  "cortex-debug.variableUseNaturalFormat": false
 }

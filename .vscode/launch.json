@@ -1,15 +1,17 @@
 {
   "version": "0.2.0",
   "configurations": [
+
     {
       "name": "Renode Debug",
       "type": "cortex-debug",
       "request": "launch",
 
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/output/stm32f411.elf",
+
       "servertype": "external",
       "gdbTarget": "localhost:3333",
-
-      "executable": "${workspaceFolder}/build/output/stm32f411.elf",
       "gdbPath": "/usr/bin/gdb-multiarch",
 
       "device": "STM32F411",
@@ -17,12 +19,19 @@
 
       "runToEntryPoint": "main",
 
-      "svdFile": "${workspaceFolder}/external/cmsis_device_f4/Include/STM32F411.svd",
+      // "svdFile": "/home/satish/Documents/MCU/STM32/hal_prj/external/svd/STM32F411.svd",
+      "svdFile": "${workspaceRoot}/external/svd/STM32F411.svd",
       
-      // "preLaunchCommands": [
-      //   "monitor reset halt"
-      //   ],
-        
+      "preLaunchCommands": [
+        "monitor reset",
+        "monitor halt"
+      ],
+
+      "postRestartCommands": [
+        "monitor reset",
+        "monitor halt"
+      ],
+
       "showDevDebugOutput": "raw"
     },
 
@@ -31,13 +40,14 @@
       "type": "cortex-debug",
       "request": "launch",
 
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/output/stm32f411.elf",
+
       "servertype": "openocd",
 
-      "executable": "${workspaceFolder}/build/output/stm32f411.elf",
       "toolchainPrefix": "arm-none-eabi",
-      "objdumpPath": "/usr/bin/arm-none-eabi-objdump",
-
       "gdbPath": "/usr/bin/gdb-multiarch",
+      "objdumpPath": "/usr/bin/arm-none-eabi-objdump",
 
       "device": "STM32F411",
       "interface": "swd",
@@ -53,13 +63,18 @@
 
       "runToEntryPoint": "main",
 
-      "svdFile": "${workspaceFolder}/external/cmsis_device_f4/Include/STM32F411.svd",
+      "svdFile": "${workspaceFolder}external/svd/STM32F411.svd",
 
       "openOCDLaunchCommands": [
         "adapter speed 1000"
       ],
 
+      "postLaunchCommands": [
+        "monitor reset halt"
+      ],
+
       "showDevDebugOutput": "raw"
     }
+
   ]
 }

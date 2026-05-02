@@ -2,7 +2,6 @@ add_library(platform STATIC
     core/startup_stm32f411xe.s
     core/system_stm32f4xx.c
     core/system_clock.c
-    # core/stm32f4xx_it.c
 )
 
 # HAL as part of platform
