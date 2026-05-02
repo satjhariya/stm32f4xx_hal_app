@@ -1,18 +1,20 @@
+extern "C" {
 #include "stm32f4xx_hal.h"
-#include "system_stm32f4xx.h"
-#include "led.h"
 #include "system_clock.h"
+}
 
-int main(void)
+#include "hw_config/board.hpp"
+
+int main()
 {
     HAL_Init();
     SystemClock_Config();
 
-    LED_Init();
+    board::Leds::init();
 
     while (1)
     {
-        LED_Toggle();
+        board::Leds::toggle();
         HAL_Delay(500);
     }
 }

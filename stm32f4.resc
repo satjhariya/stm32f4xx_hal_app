@@ -18,8 +18,7 @@ sysbus LoadELF $elf
 # --------------------------------------------------
 # UART analyzers (enable what you need)
 # --------------------------------------------------
-showAnalyzer sysbus.usart2
-
+#showAnalyzer sysbus.usart2
 # Optional:
 # showAnalyzer sysbus.usart1
 # showAnalyzer sysbus.usart3

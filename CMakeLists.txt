@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 project(stm32f411 C ASM)
+project(stm32f411 C CXX ASM)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
@@ -28,7 +32,7 @@ add_subdirectory(src)
 # Final firmware target
 # -----------------------------
 add_executable(${PROJECT_NAME}
-    src/app/main.c
+    src/app/main.cpp
 )
 
 target_sources(${PROJECT_NAME} PRIVATE
@@ -44,6 +48,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     platform
     compiler_flags
 )
+
+set(CMAKE_BUILD_TYPE Debug)
 
 # -----------------------------
 # Linker
