@@ -1,4 +1,5 @@
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <errno.h>
 #include <stdint.h>
 
@@ -61,6 +62,7 @@ int _isatty(int file)
 void* _sbrk(ptrdiff_t incr)
 {
     extern uint8_t _end;
+    extern uint8_t _estack;
     static uint8_t *heap_end;
     uint8_t *prev_heap_end;
 
@@ -68,7 +70,30 @@ void* _sbrk(ptrdiff_t incr)
         heap_end = &_end;
 
     prev_heap_end = heap_end;
-    heap_end += incr;
 
+    if (heap_end + incr > &_estack)
+    {
+        errno = ENOMEM;
+        return (void*)-1;
+    }
+
+    heap_end += incr;
     return (void*)prev_heap_end;
+}
+
+/* ============================================================
+ * Missing stubs to silence newlib warnings
+ * ============================================================ */
+
+int _getpid(void)
+{
+    return 1;
+}
+
+int _kill(int pid, int sig)
+{
+    (void)pid;
+    (void)sig;
+    errno = EINVAL;
+    return -1;
 }
