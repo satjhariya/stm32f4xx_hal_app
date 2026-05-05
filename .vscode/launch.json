@@ -19,7 +19,6 @@
 
       "runToEntryPoint": "main",
 
-      // "svdFile": "/home/satish/Documents/MCU/STM32/hal_prj/external/svd/STM32F411.svd",
       "svdFile": "${workspaceRoot}/external/svd/STM32F411.svd",
       
       "preLaunchCommands": [
@@ -63,7 +62,7 @@
 
       "runToEntryPoint": "main",
 
-      "svdFile": "${workspaceFolder}external/svd/STM32F411.svd",
+      "svdFile": "${workspaceFolder}/external/svd/STM32F411.svd",
 
       "openOCDLaunchCommands": [
         "adapter speed 1000"
