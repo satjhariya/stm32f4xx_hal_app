@@ -37,7 +37,7 @@ add_executable(${PROJECT_NAME}
 
 target_sources(${PROJECT_NAME} PRIVATE
     src/platform/core/syscalls.c
-    src/platform/core/stm32f4xx_it.c
+    # src/platform/core/stm32f4xx_it.c
 )
 
 # -----------------------------
@@ -46,6 +46,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE
     app
     platform
+    rtos
     compiler_flags
 )
 

@@ -6,4 +6,5 @@ target_include_directories(app INTERFACE
 
 target_link_libraries(app INTERFACE
     hardware
+    rtos
 )

@@ -13,3 +13,7 @@ target_link_options(mcu INTERFACE
     -mfpu=fpv4-sp-d16
     -mfloat-abi=hard
 )
+
+target_compile_definitions(mcu INTERFACE
+    STM32F411xE
+)
