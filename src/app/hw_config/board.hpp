@@ -1,6 +1,8 @@
 #pragma once
 
 #include "gpio.hpp"
+
+#include "hw_config/debug_uart.hpp"
 #include "hw_config/led.hpp"
 
 namespace board
