@@ -14,3 +14,21 @@ If you already cloned the repository without submodules, run:
 ```bash
 git submodule update --init --recursive
 ```
+
+
+src
+├── app
+│   ├── cli
+│   ├── tasks
+│   └── main.cpp
+│
+├── hardware
+│   ├── gpio
+│   ├── uart
+│   └── logger
+│
+├── platform
+│   ├── core
+│   └── hal
+│
+└── rtos

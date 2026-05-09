@@ -18,7 +18,7 @@ sysbus LoadELF $elf
 # --------------------------------------------------
 # UART analyzers (enable what you need)
 # --------------------------------------------------
-#showAnalyzer sysbus.usart2
+showAnalyzer sysbus.usart2
 # Optional:
 # showAnalyzer sysbus.usart1
 # showAnalyzer sysbus.usart3
@@ -26,8 +26,8 @@ sysbus LoadELF $elf
 # --------------------------------------------------
 # Optional TCP terminals
 # --------------------------------------------------
-# emulation CreateServerSocketTerminal 3456 "uart2_socket"
-# connector Connect sysbus.usart2 uart2_socket
+emulation CreateServerSocketTerminal 3456 "uart2_socket"
+connector Connect sysbus.usart2 uart2_socket
 
 # --------------------------------------------------
 # Optional PTY (Linux)
