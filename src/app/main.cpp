@@ -1,23 +1,13 @@
-extern "C" {
-// #include "FreeRTOS.h"
-// #include "task.h"
-#include "stm32f4xx_hal.h"
+extern "C"
+{
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include "system_clock.h"
 }
 
-// #include "tasks/led_tasks.hpp"
-
-// int main()
-// {
-//     HAL_Init();
-//     SystemClock_Config();
-
-//     app::tasks::createLedTasks();
-
-//     vTaskStartScheduler();
-
-//     while (1) {}
-// }
+#include "console.hpp"
+#include "console_task.hpp"
 
 #include "uart.hpp"
 #include "uart_config.hpp"
@@ -46,9 +36,11 @@ constexpr UartConfig debug_uart_config
 
 Uart debug_uart(debug_uart_config);
 
-void rx_callback(uint8_t byte)
+console::Console debug_console(debug_uart);
+
+void uart_rx_callback(uint8_t byte)
 {
-    debug_uart.write(&byte, 1);
+    debug_console.on_uart_rx(byte);
 }
 
 } // namespace
@@ -61,16 +53,23 @@ int main()
 
     debug_uart.init();
 
-    debug_uart.set_rx_callback(rx_callback);
+    debug_console.init();
+
+    debug_uart.set_rx_callback(
+        uart_rx_callback
+    );
 
     debug_uart.start_receive_interrupt();
 
-    debug_uart.write("\r\n");
-    debug_uart.write("=================================\r\n");
-    debug_uart.write(" STM32 UART IRQ Driver Ready\r\n");
-    debug_uart.write(" USART2 @ 115200 baud\r\n");
-    debug_uart.write(" Interrupt-driven RX enabled\r\n");
-    debug_uart.write("=================================\r\n");
+    console::start_console_task(
+        debug_console
+    );
+
+    debug_uart.write(
+        "\r\n[system boot]\r\n"
+    );
+
+    vTaskStartScheduler();
 
     while (1)
     {
