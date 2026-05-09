@@ -6,6 +6,8 @@
 
 #include "stm32f4xx_hal.h"
 
+#include "uart_config.hpp"
+
 namespace hardware
 {
 
@@ -15,9 +17,9 @@ public:
     using RxCallback = void(*)(uint8_t byte);
 
 public:
-    explicit Uart(USART_TypeDef* instance);
+    explicit Uart(const UartConfig& config);
 
-    bool init(uint32_t baudrate);
+    bool init();
 
     bool write(const uint8_t* data, size_t len);
 
@@ -29,18 +31,24 @@ public:
 
     void irq_handler();
 
+    void handle_rx_complete();
+
     void set_rx_callback(RxCallback cb);
 
     UART_HandleTypeDef* handle();
 
-    uint8_t rx_byte() const;
-
-    void handle_rx_complete();
+    USART_TypeDef* instance() const;
 
 private:
     void init_gpio();
 
+    void enable_clock();
+
+    void configure_nvic();
+
 private:
+    UartConfig config_;
+
     UART_HandleTypeDef huart_ {};
 
     uint8_t rx_byte_ {};

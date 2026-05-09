@@ -2,6 +2,7 @@ add_library(platform STATIC
     core/startup_stm32f411xe.s
     core/system_stm32f4xx.c
     core/system_clock.c
+    core/interrupt.cpp
 )
 
 # HAL as part of platform
