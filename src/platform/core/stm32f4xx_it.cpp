@@ -1,11 +1,11 @@
 #include "stm32f4xx_hal.h"
 #include "interrupt.hpp"
 
-extern "C"
-void SysTick_Handler(void)
-{
-    HAL_IncTick();
-}
+// extern "C"
+// void SysTick_Handler(void)
+// {
+//     HAL_IncTick();
+// }
 
 extern "C"
 void WWDG_IRQHandler(void)
