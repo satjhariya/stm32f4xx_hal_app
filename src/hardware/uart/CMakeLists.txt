@@ -1,6 +1,5 @@
 add_library(hardware_uart STATIC
     uart.cpp
-    # uart_it.cpp
 )
 
 target_include_directories(hardware_uart PUBLIC
