@@ -1,24 +1,23 @@
-#include "console_task.hpp"
-
+extern "C"
+{
 #include "FreeRTOS.h"
 #include "task.h"
+}
+
+#include "console_tasks.hpp"
 
 #include "console.hpp"
 
-namespace console
+namespace app::tasks
 {
 
 namespace
 {
 
-constexpr uint16_t CONSOLE_TASK_STACK_SIZE = 512;
-
-constexpr UBaseType_t CONSOLE_TASK_PRIORITY = 2;
-
-void console_task(void* arg)
+void consoleTask(void* arg)
 {
     auto* console =
-        static_cast<Console*>(arg);
+        static_cast<console::Console*>(arg);
 
     uint8_t byte {};
 
@@ -43,16 +42,18 @@ void console_task(void* arg)
 
 } // namespace
 
-void start_console_task(Console& console)
+void createConsoleTask(
+    console::Console& console
+)
 {
     xTaskCreate(
-        console_task,
+        consoleTask,
         "console",
-        CONSOLE_TASK_STACK_SIZE,
+        512,
         &console,
-        CONSOLE_TASK_PRIORITY,
+        2,
         nullptr
     );
 }
 
-} // namespace console
+} // namespace app::tasks

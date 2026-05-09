@@ -1,6 +1,5 @@
 add_library(console STATIC
     console.cpp
-    console_task.cpp
 )
 
 target_include_directories(console PUBLIC
