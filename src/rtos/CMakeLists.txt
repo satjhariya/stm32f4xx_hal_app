@@ -7,7 +7,7 @@ add_library(rtos STATIC
     kernel/queue.c
     kernel/list.c
     kernel/timers.c
-
+    kernel/stream_buffer.c
     kernel/portable/GCC/ARM_CM4F/port.c
     kernel/portable/MemMang/heap_4.c
 )
