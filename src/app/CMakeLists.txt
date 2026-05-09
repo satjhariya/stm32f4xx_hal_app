@@ -1,6 +1,7 @@
 add_library(app STATIC
     tasks/led_tasks.cpp
     tasks/console_tasks.cpp
+    hw_config/debug_uart.cpp
 )
 
 target_include_directories(app PUBLIC
