@@ -7,7 +7,7 @@ add_library(platform STATIC
 # HAL as part of platform
 target_sources(platform PRIVATE
     ${CMAKE_SOURCE_DIR}/external/stm32f4xx_hal_driver/Src/stm32f4xx_hal.c
-    ${CMAKE_SOURCE_DIR}/external/stm32f4xx_hal_driver/Src/stm32f4xx_hal_gpio.c
+    ${CMAKE_SOURCE_DIR}/external/stm32f4xx_hal_driver/Src/stm32f4xx_hal_dma.c
     ${CMAKE_SOURCE_DIR}/external/stm32f4xx_hal_driver/Src/stm32f4xx_hal_rcc.c
     ${CMAKE_SOURCE_DIR}/external/stm32f4xx_hal_driver/Src/stm32f4xx_hal_cortex.c
 )

@@ -1,10 +1,9 @@
+add_subdirectory(gpio)
+add_subdirectory(uart)
+
 add_library(hardware INTERFACE)
 
-target_include_directories(hardware INTERFACE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
 target_link_libraries(hardware INTERFACE
-    cmsis
-    platform
+    hardware_gpio
+    hardware_uart
 )

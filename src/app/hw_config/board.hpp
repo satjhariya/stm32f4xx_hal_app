@@ -1,13 +1,13 @@
 #pragma once
 
-#include "gpio/gpio.hpp"
+#include "gpio.hpp"
 #include "hw_config/led.hpp"
 
 namespace board
 {
     using Led1 = app::LED<hw::GPIO<hw::PortA, GPIO_PIN_1>>;
     using Led2 = app::LED<hw::GPIO<hw::PortB, GPIO_PIN_1>>;
-    using Led3 = app::LED<hw::GPIO<hw::PortC, GPIO_PIN_1>>;
+    using Led3 = app::LED<hw::GPIO<hw::PortC, GPIO_PIN_13>>;        //Eval Board LED
 
     template<typename... Leds>
     struct LEDGroup
