@@ -37,7 +37,8 @@ add_executable(${PROJECT_NAME}
 
 target_sources(${PROJECT_NAME} PRIVATE
     src/platform/core/syscalls.c
-    # src/platform/core/stm32f4xx_it.c
+    src/platform/core/stm32f4xx_it.c
+    src/hardware/uart/uart_it.cpp
 )
 
 # -----------------------------
