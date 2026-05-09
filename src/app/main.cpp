@@ -7,7 +7,9 @@ extern "C"
 }
 
 #include "console.hpp"
-#include "console_task.hpp"
+
+#include "tasks/console_tasks.hpp"
+#include "tasks/led_tasks.hpp"
 
 #include "uart.hpp"
 #include "uart_config.hpp"
@@ -51,6 +53,12 @@ int main()
 
     SystemClock_Config();
 
+    /*
+     * ============================================================
+     * UART + Console Initialization
+     * ============================================================
+     */
+
     debug_uart.init();
 
     debug_console.init();
@@ -61,13 +69,27 @@ int main()
 
     debug_uart.start_receive_interrupt();
 
-    console::start_console_task(
-        debug_console
-    );
-
     debug_uart.write(
         "\r\n[system boot]\r\n"
     );
+
+    /*
+     * ============================================================
+     * Application Tasks
+     * ============================================================
+     */
+
+    app::tasks::createLedTasks();
+
+    app::tasks::createConsoleTask(
+        debug_console
+    );
+
+    /*
+     * ============================================================
+     * Start Scheduler
+     * ============================================================
+     */
 
     vTaskStartScheduler();
 

@@ -1,5 +1,6 @@
 add_library(app STATIC
     tasks/led_tasks.cpp
+    tasks/console_tasks.cpp
 )
 
 target_include_directories(app PUBLIC
