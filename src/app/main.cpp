@@ -20,13 +20,38 @@ extern "C" {
 // }
 
 #include "uart.hpp"
+#include "uart_config.hpp"
 
-hardware::Uart uart(USART2);
+using namespace hardware;
+
+namespace
+{
+
+constexpr UartConfig debug_uart_config
+{
+    .instance = USART2,
+
+    .tx_port = GPIOA,
+    .tx_pin  = GPIO_PIN_2,
+    .tx_af   = GPIO_AF7_USART2,
+
+    .rx_port = GPIOA,
+    .rx_pin  = GPIO_PIN_3,
+    .rx_af   = GPIO_AF7_USART2,
+
+    .irq = USART2_IRQn,
+
+    .baudrate = 115200
+};
+
+Uart debug_uart(debug_uart_config);
 
 void rx_callback(uint8_t byte)
 {
-    uart.write(&byte, 1);
+    debug_uart.write(&byte, 1);
 }
+
+} // namespace
 
 int main()
 {
@@ -34,13 +59,18 @@ int main()
 
     SystemClock_Config();
 
-    uart.init(115200);
+    debug_uart.init();
 
-    uart.set_rx_callback(rx_callback);
+    debug_uart.set_rx_callback(rx_callback);
 
-    uart.start_receive_interrupt();
+    debug_uart.start_receive_interrupt();
 
-    uart.write("UART IRQ Ready\r\n");
+    debug_uart.write("\r\n");
+    debug_uart.write("=================================\r\n");
+    debug_uart.write(" STM32 UART IRQ Driver Ready\r\n");
+    debug_uart.write(" USART2 @ 115200 baud\r\n");
+    debug_uart.write(" Interrupt-driven RX enabled\r\n");
+    debug_uart.write("=================================\r\n");
 
     while (1)
     {
