@@ -8,5 +8,5 @@ target_include_directories(console PUBLIC
 
 target_link_libraries(console PUBLIC
     hardware_uart
-    rtos
+    freertos_kernel
 )
