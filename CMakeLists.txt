@@ -14,6 +14,12 @@ set(OUTPUT_DIR ${CMAKE_BINARY_DIR}/output)
 file(MAKE_DIRECTORY ${OUTPUT_DIR})
 
 # -----------------------------
+# Source tree
+# -----------------------------
+add_subdirectory(src)
+
+
+# -----------------------------
 # Modules
 # -----------------------------
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
@@ -22,11 +28,7 @@ include(cmsis)
 include(compiler_flags)
 include(mcu)
 include(postbuild)
-
-# -----------------------------
-# Source tree
-# -----------------------------
-add_subdirectory(src)
+include(freertos)
 
 # -----------------------------
 # Final firmware target
@@ -46,7 +48,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE
     app
     platform
-    rtos
     compiler_flags
 )
 
