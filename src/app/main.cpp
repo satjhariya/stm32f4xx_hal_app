@@ -9,7 +9,6 @@ extern "C"
 #include "hw_config/board.hpp"
 
 #include "tasks/console_tasks.hpp"
-#include "tasks/led_tasks.hpp"
 
 int main()
 {
@@ -34,8 +33,6 @@ int main()
      * Application Tasks
      * ============================================================
      */
-
-    app::tasks::createLedTasks();
 
     app::tasks::createConsoleTask(
         board::DebugConsole
