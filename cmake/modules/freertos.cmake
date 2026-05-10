@@ -1,0 +1,43 @@
+# ============================================================
+# FreeRTOS Kernel Configuration
+# ============================================================
+
+set(FREERTOS_PORT GCC_ARM_CM4F CACHE STRING "")
+
+set(FREERTOS_HEAP 4 CACHE STRING "")
+
+# ============================================================
+# FreeRTOS Configuration Interface
+# ============================================================
+
+# add_library(freertos_config INTERFACE)
+
+# target_include_directories(freertos_config SYSTEM
+#     INTERFACE
+#         ${CMAKE_SOURCE_DIR}/src/config
+# )
+
+# target_compile_definitions(freertos_config
+#     INTERFACE
+#         projCOVERAGE_TEST=0
+# )
+
+# ============================================================
+# FreeRTOS Kernel
+# ============================================================
+
+add_subdirectory(
+    ${CMAKE_SOURCE_DIR}/external/freertos_kernel
+)
+
+# ============================================================
+# MCU Compile Options
+# ============================================================
+
+target_link_libraries(freertos_kernel PUBLIC
+    mcu
+)
+
+target_link_libraries(freertos_kernel_port PUBLIC
+    mcu
+)

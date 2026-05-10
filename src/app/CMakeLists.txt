@@ -10,6 +10,6 @@ target_include_directories(app PUBLIC
 
 target_link_libraries(app PUBLIC
     hardware
-    rtos
+    freertos_kernel
     console
 )
