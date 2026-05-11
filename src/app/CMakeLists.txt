@@ -5,9 +5,11 @@ add_library(app STATIC
 )
 
 target_include_directories(app PUBLIC
+target_include_directories(app PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+target_link_libraries(app PUBLIC
 target_link_libraries(app PUBLIC
     hardware
     freertos_kernel
