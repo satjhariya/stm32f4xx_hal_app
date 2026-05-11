@@ -106,43 +106,42 @@ void Spi::enable_clock()
 
 void Spi::init_gpio()
 {
-    if (config_.sck_port == GPIOA)
-    {
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-    }
-    else if (config_.sck_port == GPIOB)
-    {
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-    }
-    else if (config_.sck_port == GPIOC)
-    {
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-    }
+    auto enable_gpio_clock =
+        [](GPIO_TypeDef* port)
+        {
+            if (port == GPIOA)
+            {
+                __HAL_RCC_GPIOA_CLK_ENABLE();
+            }
+            else if (port == GPIOB)
+            {
+                __HAL_RCC_GPIOB_CLK_ENABLE();
+            }
+            else if (port == GPIOC)
+            {
+                __HAL_RCC_GPIOC_CLK_ENABLE();
+            }
+            else if (port == GPIOD)
+            {
+                __HAL_RCC_GPIOD_CLK_ENABLE();
+            }
+            else if (port == GPIOE)
+            {
+                __HAL_RCC_GPIOE_CLK_ENABLE();
+            }
+            else if (port == GPIOH)
+            {
+                __HAL_RCC_GPIOH_CLK_ENABLE();
+            }
+        };
 
-    if (config_.miso_port == GPIOA)
-    {
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-    }
-    else if (config_.miso_port == GPIOB)
-    {
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-    }
-    else if (config_.miso_port == GPIOC)
-    {
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-    }
+    enable_gpio_clock(config_.sck_port);
+    enable_gpio_clock(config_.miso_port);
+    enable_gpio_clock(config_.mosi_port);
 
-    if (config_.mosi_port == GPIOA)
+    if (config_.nss_port != nullptr)
     {
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-    }
-    else if (config_.mosi_port == GPIOB)
-    {
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-    }
-    else if (config_.mosi_port == GPIOC)
-    {
-        __HAL_RCC_GPIOC_CLK_ENABLE();
+        enable_gpio_clock(config_.nss_port);
     }
 
     GPIO_InitTypeDef gpio {};
@@ -165,6 +164,14 @@ void Spi::init_gpio()
     gpio.Alternate = config_.mosi_af;
 
     HAL_GPIO_Init(config_.mosi_port, &gpio);
+
+    if (config_.nss_port != nullptr)
+    {
+        gpio.Pin       = config_.nss_pin;
+        gpio.Alternate = config_.nss_af;
+
+        HAL_GPIO_Init(config_.nss_port, &gpio);
+    }
 }
 
 void Spi::configure_nvic()
@@ -204,16 +211,27 @@ bool Spi::init()
 
     configure_nvic();
 
-    hspi_.Init.Mode              = config_.mode;
-    hspi_.Init.Direction         = config_.direction;
-    hspi_.Init.DataSize          = config_.datasize;
-    hspi_.Init.CLKPolarity       = config_.clk_polarity;
-    hspi_.Init.CLKPhase          = config_.clk_phase;
-    hspi_.Init.NSS               = config_.nss;
-    hspi_.Init.BaudRatePrescaler = config_.baudrate_prescaler;
-    hspi_.Init.FirstBit          = config_.first_bit;
-    hspi_.Init.TIMode            = config_.timode;
-    hspi_.Init.CRCCalculation    = config_.crc_calculation;
+    hspi_.Init.Mode =
+        (config_.role == SpiRole::MASTER)
+            ? SPI_MODE_MASTER
+            : SPI_MODE_SLAVE;
+
+    hspi_.Init.Direction  = config_.direction;
+    hspi_.Init.DataSize   = config_.datasize;
+    hspi_.Init.CLKPolarity = config_.clk_polarity;
+    hspi_.Init.CLKPhase    = config_.clk_phase;
+
+    hspi_.Init.NSS =
+        (config_.role == SpiRole::MASTER)
+            ? SPI_NSS_SOFT
+            : SPI_NSS_HARD_INPUT;
+
+    hspi_.Init.BaudRatePrescaler =
+        config_.baudrate_prescaler;
+
+    hspi_.Init.FirstBit       = config_.first_bit;
+    hspi_.Init.TIMode         = config_.timode;
+    hspi_.Init.CRCCalculation = config_.crc_calculation;
 
     if (HAL_SPI_Init(&hspi_) != HAL_OK)
     {
@@ -275,6 +293,45 @@ bool Spi::transfer(
     );
 }
 
+bool Spi::start_receive_interrupt(
+    uint8_t* data,
+    size_t len
+)
+{
+    rx_buffer_ = data;
+    rx_length_ = len;
+
+    return (
+        HAL_SPI_Receive_IT(
+            &hspi_,
+            data,
+            len
+        ) == HAL_OK
+    );
+}
+
+void Spi::set_rx_callback(
+    RxCallback cb
+)
+{
+    rx_callback_ = cb;
+}
+
+void Spi::handle_rx_complete()
+{
+    if (rx_callback_ != nullptr)
+    {
+        rx_callback_(
+            rx_buffer_,
+            rx_length_
+        );
+    }
+
+    start_receive_interrupt(
+        rx_buffer_,
+        rx_length_
+    );
+}
 
 void Spi::irq_handler()
 {
@@ -292,3 +349,19 @@ SPI_TypeDef* Spi::instance() const
 }
 
 } // namespace hardware
+
+extern "C"
+void HAL_SPI_RxCpltCallback(
+    SPI_HandleTypeDef* hspi
+)
+{
+    auto spi =
+        hardware::find_spi_instance(
+            hspi->Instance
+        );
+
+    if (spi != nullptr)
+    {
+        spi->handle_rx_complete();
+    }
+}

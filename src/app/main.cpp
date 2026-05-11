@@ -6,15 +6,17 @@
 
 using namespace hardware;
 
+using Cs = hw::GPIO<hw::PortA, GPIO_PIN_1>;
+
 int main()
 {
     // -------------------------------------------------
     // Chip Select GPIO
     // -------------------------------------------------
-    using cs = hw::GPIO<hw::PortA,GPIO_PIN_1>;
-    cs::initOutput();
 
-    cs::set();
+    Cs::initOutput();
+
+    Cs::set();
 
     // -------------------------------------------------
     // SPI Configuration
@@ -35,17 +37,21 @@ int main()
         .mosi_pin  = GPIO_PIN_7,
         .mosi_af   = GPIO_AF5_SPI1,
 
+        // NSS intentionally external
+        // because CS is manually controlled
+        // through GPIO abstraction
+
         .irq = SPI1_IRQn,
+
+        .role = SpiRole::MASTER,
 
         .baudrate_prescaler =
             SPI_BAUDRATEPRESCALER_16,
 
-        .mode         = SPI_MODE_MASTER,
         .direction    = SPI_DIRECTION_2LINES,
         .datasize     = SPI_DATASIZE_8BIT,
         .clk_polarity = SPI_POLARITY_LOW,
         .clk_phase    = SPI_PHASE_1EDGE,
-        .nss          = SPI_NSS_SOFT,
         .first_bit    = SPI_FIRSTBIT_MSB
     };
 
@@ -73,7 +79,7 @@ int main()
 
     uint8_t rx[4] {};
 
-    if (!spi.transfer<cs>(
+    if (!spi.transfer<Cs>(
             tx,
             rx,
             sizeof(tx)
@@ -84,9 +90,9 @@ int main()
         }
     }
 
-    // rx[1] -> Manufacturer ID
-    // rx[2] -> Memory Type
-    // rx[3] -> Capacity
+    // -------------------------------------------------
+    // JEDEC Response
+    // -------------------------------------------------
 
     volatile uint8_t manufacturer = rx[1];
     volatile uint8_t memory_type  = rx[2];
