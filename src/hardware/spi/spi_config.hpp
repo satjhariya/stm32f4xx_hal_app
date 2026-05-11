@@ -5,6 +5,12 @@
 namespace hardware
 {
 
+enum class SpiRole
+{
+    MASTER,
+    SLAVE
+};
+
 struct SpiConfig
 {
     SPI_TypeDef* instance;
@@ -21,19 +27,28 @@ struct SpiConfig
     uint16_t mosi_pin;
     uint8_t mosi_af;
 
+    GPIO_TypeDef* nss_port = nullptr;
+    uint16_t nss_pin       = 0;
+    uint8_t nss_af         = 0;
+
     IRQn_Type irq;
 
-    uint32_t baudrate_prescaler;
+    SpiRole role = SpiRole::MASTER;
 
-    uint32_t mode           = SPI_MODE_MASTER;
-    uint32_t direction      = SPI_DIRECTION_2LINES;
-    uint32_t datasize       = SPI_DATASIZE_8BIT;
-    uint32_t clk_polarity   = SPI_POLARITY_LOW;
-    uint32_t clk_phase      = SPI_PHASE_1EDGE;
-    uint32_t nss            = SPI_NSS_SOFT;
-    uint32_t first_bit      = SPI_FIRSTBIT_MSB;
-    uint32_t timode         = SPI_TIMODE_DISABLE;
-    uint32_t crc_calculation = SPI_CRCCALCULATION_DISABLE;
+    uint32_t baudrate_prescaler =
+        SPI_BAUDRATEPRESCALER_16;
+
+    uint32_t direction    = SPI_DIRECTION_2LINES;
+    uint32_t datasize     = SPI_DATASIZE_8BIT;
+    uint32_t clk_polarity = SPI_POLARITY_LOW;
+    uint32_t clk_phase    = SPI_PHASE_1EDGE;
+    uint32_t first_bit    = SPI_FIRSTBIT_MSB;
+
+    uint32_t timode =
+        SPI_TIMODE_DISABLE;
+
+    uint32_t crc_calculation =
+        SPI_CRCCALCULATION_DISABLE;
 };
 
 } // namespace hardware
