@@ -1,28 +1,26 @@
-#include <cstdint>
+extern "C"
+{
+    #include "system_clock.h"
+}
 
+#include "i3g4250d.hpp"
 #include "gpio.hpp"
 #include "spi.hpp"
 #include "spi_config.hpp"
-
-using namespace hardware;
 
 using Cs = hw::GPIO<hw::PortA, GPIO_PIN_1>;
 
 int main()
 {
-    // -------------------------------------------------
-    // Chip Select GPIO
-    // -------------------------------------------------
+    HAL_Init();
+
+    SystemClock_Config();
 
     Cs::initOutput();
 
     Cs::set();
 
-    // -------------------------------------------------
-    // SPI Configuration
-    // -------------------------------------------------
-
-    SpiConfig spi_cfg {
+    hardware::SpiConfig spi_cfg {
         .instance = SPI1,
 
         .sck_port = GPIOA,
@@ -37,13 +35,9 @@ int main()
         .mosi_pin  = GPIO_PIN_7,
         .mosi_af   = GPIO_AF5_SPI1,
 
-        // NSS intentionally external
-        // because CS is manually controlled
-        // through GPIO abstraction
-
         .irq = SPI1_IRQn,
 
-        .role = SpiRole::MASTER,
+        .role = hardware::SpiRole::MASTER,
 
         .baudrate_prescaler =
             SPI_BAUDRATEPRESCALER_16,
@@ -55,7 +49,7 @@ int main()
         .first_bit    = SPI_FIRSTBIT_MSB
     };
 
-    Spi spi(spi_cfg);
+    hardware::Spi spi(spi_cfg);
 
     if (!spi.init())
     {
@@ -64,45 +58,22 @@ int main()
         }
     }
 
-    // -------------------------------------------------
-    // Example: Read JEDEC ID
-    // -------------------------------------------------
+    application::I3g4250d<Cs> gyro(spi);
 
-    constexpr uint8_t CMD_JEDEC_ID = 0x9F;
-
-    uint8_t tx[4] = {
-        CMD_JEDEC_ID,
-        0x00,
-        0x00,
-        0x00
-    };
-
-    uint8_t rx[4] {};
-
-    if (!spi.transfer<Cs>(
-            tx,
-            rx,
-            sizeof(tx)
-        ))
+    if (!gyro.init())
     {
         while (true)
         {
         }
     }
 
-    // -------------------------------------------------
-    // JEDEC Response
-    // -------------------------------------------------
-
-    volatile uint8_t manufacturer = rx[1];
-    volatile uint8_t memory_type  = rx[2];
-    volatile uint8_t capacity     = rx[3];
-
-    (void)manufacturer;
-    (void)memory_type;
-    (void)capacity;
+    application::I3g4250d<Cs>::AngularRate rate {};
 
     while (true)
     {
+        if (gyro.data_ready())
+        {
+            gyro.read_angular_rate(rate);
+        }
     }
 }

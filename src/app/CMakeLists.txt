@@ -7,9 +7,11 @@ add_library(app STATIC
 target_include_directories(app PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
+add_subdirectory(i3g4250d)
 
 target_link_libraries(app PUBLIC
     hardware
     freertos_kernel
     console
+    application_i3g4250d
 )
