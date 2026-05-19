@@ -50,3 +50,39 @@ void USART6_IRQHandler(void)
         handler();
     }
 }
+
+extern "C"
+void SPI1_IRQHandler(void)
+{
+    auto handler =
+        platform::get_irq_handler(SPI1_IRQn);
+
+    if (handler)
+    {
+        handler();
+    }
+}
+
+extern "C"
+void SPI2_IRQHandler(void)
+{
+    auto handler =
+        platform::get_irq_handler(SPI2_IRQn);
+
+    if (handler)
+    {
+        handler();
+    }
+}
+
+extern "C"
+void SPI3_IRQHandler(void)
+{
+    auto handler =
+        platform::get_irq_handler(SPI3_IRQn);
+
+    if (handler)
+    {
+        handler();
+    }
+}

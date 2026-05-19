@@ -1,16 +1,5 @@
 add_library(compiler_flags INTERFACE)
 
-# target_compile_options(compiler_flags INTERFACE
-#     -ffreestanding
-#     -fdata-sections
-#     -ffunction-sections
-#     -g3
-#     -Og
-#     -fno-omit-frame-pointer
-#     -fno-exceptions
-# )
-
-
 target_compile_options(compiler_flags INTERFACE
     -ffreestanding
     -g3
