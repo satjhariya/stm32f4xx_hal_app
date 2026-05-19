@@ -6,21 +6,6 @@ set(FREERTOS_PORT GCC_ARM_CM4F CACHE STRING "")
 
 set(FREERTOS_HEAP 4 CACHE STRING "")
 
-# ============================================================
-# FreeRTOS Configuration Interface
-# ============================================================
-
-# add_library(freertos_config INTERFACE)
-
-# target_include_directories(freertos_config SYSTEM
-#     INTERFACE
-#         ${CMAKE_SOURCE_DIR}/src/config
-# )
-
-# target_compile_definitions(freertos_config
-#     INTERFACE
-#         projCOVERAGE_TEST=0
-# )
 
 # ============================================================
 # FreeRTOS Kernel
